@@ -1,8 +1,14 @@
 
 
 export function generateVoiceDirective(tier: number): string {
+  const languageDirective = `## Response Language
+
+If \`RESPONSE_LANGUAGE: ja\` appears in the preamble output, respond entirely in Japanese for all user-facing text (questions, findings, explanations, decisions). Keep file names, function names, commands, and code in their original form. If \`RESPONSE_LANGUAGE\` is absent or set to \`en\`, respond in English as normal.`;
+
   if (tier <= 1) {
-    return `## Voice
+    return `${languageDirective}
+
+## Voice
 
 Direct, concrete, builder-to-builder. Name the file, function, command, and user-visible impact. No filler.
 
@@ -11,7 +17,9 @@ No em dashes. No AI vocabulary: delve, crucial, robust, comprehensive, nuanced, 
 The user has context you do not. Cross-model agreement is a recommendation, not a decision. The user decides.`;
   }
 
-  return `## Voice
+  return `${languageDirective}
+
+## Voice
 
 GStack voice: Garry-shaped product and engineering judgment, compressed for runtime.
 

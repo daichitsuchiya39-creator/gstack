@@ -85,6 +85,13 @@ CONFIG_HEADER='# gstack configuration — edit freely, changes take effect on ne
 #                           # Non-Conductor users can point this at any directory
 #                           # that holds parallel worktrees of the same repo.
 #
+# ─── Language ────────────────────────────────────────────────────────
+# response_language: en     # en | ja | zh | ko | es | fr | de | pt
+#                           # Language for all skill responses.
+#                           # en = English (default)
+#                           # ja = Japanese (日本語)
+#                           # Set via: gstack-config set response_language ja
+#
 '
 
 # DEFAULTS table — canonical default values for known keys.
@@ -107,6 +114,7 @@ lookup_default() {
     cross_project_learnings) echo "" ;; # intentionally empty → unset triggers first-time prompt
     artifacts_sync_mode) echo "off" ;;
     artifacts_sync_mode_prompted) echo "false" ;;
+    response_language) echo "en" ;;
     *) echo "" ;;
   esac
 }
@@ -142,6 +150,12 @@ case "${1:-}" in
       echo "Warning: artifacts_sync_mode '$VALUE' not recognized. Valid values: off, artifacts-only, full. Using off." >&2
       VALUE="off"
     fi
+    if [ "$KEY" = "response_language" ]; then
+      case "$VALUE" in
+        en|ja|zh|ko|es|fr|de|pt) ;;
+        *) echo "Warning: response_language '$VALUE' not recognized. Valid values: en, ja, zh, ko, es, fr, de, pt. Using en." >&2; VALUE="en" ;;
+      esac
+    fi
     mkdir -p "$STATE_DIR"
     # Write annotated header on first creation
     if [ ! -f "$CONFIG_FILE" ]; then
@@ -171,7 +185,7 @@ case "${1:-}" in
     for KEY in proactive routing_declined telemetry auto_upgrade update_check \
                skill_prefix checkpoint_mode checkpoint_push codex_reviews \
                gstack_contributor skip_eng_review workspace_root \
-               artifacts_sync_mode artifacts_sync_mode_prompted; do
+               artifacts_sync_mode artifacts_sync_mode_prompted response_language; do
       VALUE=$(grep -E "^${KEY}:" "$CONFIG_FILE" 2>/dev/null | tail -1 | awk '{print $2}' | tr -d '[:space:]' || true)
       SOURCE="default"
       if [ -n "$VALUE" ]; then
@@ -187,7 +201,7 @@ case "${1:-}" in
     for KEY in proactive routing_declined telemetry auto_upgrade update_check \
                skill_prefix checkpoint_mode checkpoint_push codex_reviews \
                gstack_contributor skip_eng_review workspace_root \
-               artifacts_sync_mode artifacts_sync_mode_prompted; do
+               artifacts_sync_mode artifacts_sync_mode_prompted response_language; do
       printf '  %-24s %s\n' "$KEY:" "$(lookup_default "$KEY")"
     done
     ;;
