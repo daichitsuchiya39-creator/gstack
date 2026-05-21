@@ -68,6 +68,8 @@ if [ "$_EXPLAIN_LEVEL" != "default" ] && [ "$_EXPLAIN_LEVEL" != "terse" ]; then 
 echo "EXPLAIN_LEVEL: $_EXPLAIN_LEVEL"
 _QUESTION_TUNING=$(~/.claude/skills/gstack/bin/gstack-config get question_tuning 2>/dev/null || echo "false")
 echo "QUESTION_TUNING: $_QUESTION_TUNING"
+_RESPONSE_LANGUAGE=$(~/.claude/skills/gstack/bin/gstack-config get response_language 2>/dev/null || echo "en")
+echo "RESPONSE_LANGUAGE: $_RESPONSE_LANGUAGE"
 mkdir -p ~/.gstack/analytics
 if [ "$_TEL" != "off" ]; then
 echo '{"skill":"plan-tune","ts":"'$(date -u +%Y-%m-%dT%H:%M:%SZ)'","repo":"'$(basename "$(git rev-parse --show-toplevel 2>/dev/null)" 2>/dev/null || echo "unknown")'"}'  >> ~/.gstack/analytics/skill-usage.jsonl 2>/dev/null || true
@@ -507,6 +509,10 @@ the user course-correct cheaply instead of mid-flight.
 
 **Dedicated tools over Bash.** Prefer Read, Edit, Write, Glob, Grep over shell
 equivalents (cat, sed, find, grep). The dedicated tools are cheaper and clearer.
+
+## Response Language
+
+If `RESPONSE_LANGUAGE: ja` appears in the preamble output, respond entirely in Japanese for all user-facing text (questions, findings, explanations, decisions). Keep file names, function names, commands, and code in their original form. If `RESPONSE_LANGUAGE` is absent or set to `en`, respond in English as normal.
 
 ## Voice
 
